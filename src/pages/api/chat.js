@@ -1,6 +1,6 @@
 import { OpenAIApi, Configuration } from 'openai';
 
-const apiKey = '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';
+const apiKey = process.env.OPENAI_API_KEY;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
