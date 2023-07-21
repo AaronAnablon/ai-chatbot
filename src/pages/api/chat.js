@@ -1,8 +1,10 @@
 import { OpenAIApi, Configuration } from 'openai';
+require('dotenv').config();
 
-const apiKey = process.env.OPENAI_API_KEY;
 
 export default async function handler(req, res) {
+
+  const apiKey = process.env.OPENAI_API_KEY;
   if (req.method !== 'POST') {
     res.status(405).json({ message: 'Method should be POST' });
     return;
