@@ -26,6 +26,7 @@ export default function Home() {
       setChatLog((prevChatLog) => [...prevChatLog, { type: "bot", message: response.data.message.choices[0].message.content }]);
     } catch (error) {
       console.error(error);
+      setChatLog((prevChatLog) => [...prevChatLog, { type: "bot", message: 'Sorry! Something went wrong in the server. Please try to send message later' }]);
     }
 
     setIsLoading(false);
@@ -52,7 +53,7 @@ export default function Home() {
         </div>
         <form onSubmit={handleSubmit} className="flex-none p-6 bg-gray-900 sticky bottom-0">
           <div className="flex rounded-lg border border-gray-700 bg-gray-800">
-            <input type="text" className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none" placeholder="Type your message..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+            <input type="text" className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none" placeholder="Type your message..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} required/>
             {
               isLoading ?
               <div key={chatLog.length} className="flex justify-start">
