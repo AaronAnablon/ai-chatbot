@@ -6,7 +6,7 @@ const NavBar = ({ toggleNav, setData, toggleModal }) => {
         setData(data)
     }
     return (
-        <div className="bg-black px-4 h-full sticky top-0">
+        <div className="bg-black px-4 h-screen sticky top-0">
             <div className="flex justify-end"><button className="text-white p-4 lg:hidden text-4xl" onClick={toggleNav}>
                 X
             </button></div>
