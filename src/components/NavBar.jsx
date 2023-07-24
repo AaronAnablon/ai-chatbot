@@ -1,27 +1,32 @@
 import Link from "next/link";
-import {
-    GiHamburgerMenu,
-    GiGraduateCap,
-    GiDatabase,
-    GiTimeBomb,
-    GiForwardSun,
-} from "react-icons/gi";
+import ExampleData from "@/helpers/ExampleData";
 
-const NavBar = ({ toggleNav }) => {
+const NavBar = ({ toggleNav, setData, toggleModal }) => {
+    const handleClick = (data) => {
+        setData(data)
+    }
     return (
-        <div className="fixed top-0 left-0 h-full bg-black px-4">
-            <button className="text-white p-4 lg:hidden" onClick={toggleNav}>
-                <GiHamburgerMenu size={28} />
-            </button>
+        <div className="bg-black px-4 h-full sticky top-0">
+            <div className="flex justify-end"><button className="text-white p-4 lg:hidden text-4xl" onClick={toggleNav}>
+                X
+            </button></div>
             <h1 className="sticky top-0 bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text text-center py-3 font-bold text-6xl">Ai Chatbot</h1>
-            <Link href='/' target="_blank" rel="noopener noreferrer" className="sticky text-white top-96 text-center py-3 text-xl">About Developer</Link>
-            <div className="text-white flex flex-col gap-4">
-                <Link href='/chatbot' className="flex items-center gap-4 text-2xl"><div className="bg-red-500 rounded-md p-1"><GiGraduateCap size={38} /></div>Grammar correction</Link>
-                <Link href='/parse' className="flex items-center gap-4 text-2xl"><div className="bg-red-500 rounded-md p-1"><GiDatabase size={38} /></div>Parse unstructured data</Link>
-                <Link href='/chatbot' className="flex items-center gap-4 text-2xl"><div className="bg-red-500 rounded-md p-1"><GiTimeBomb size={38} /></div>Calculate time complexity</Link>
-                <Link href='/chatbot' className="flex items-center gap-4 text-2xl"><div className="bg-red-500 rounded-md p-1"><GiForwardSun size={38} /></div>Summarize for second Grader</Link>
-            </div>
-        </div>
+            <div className="text-white sticky top-36 flex flex-col gap-4">
+                {ExampleData && ExampleData.map((data, index) => (
+                    <div key={index} onClick={toggleModal}>
+                        <div onClick={() => handleClick(data)} className="flex items-center cursor-pointer gap-4 text-2xl">
+                            <div className="bg-blue-700 rounded-md w-14 p-1">
+                                {data.logo}
+                            </div>
+                            {data.title}
+                        </div>
+                    </div >
+                ))}
+            </div >
+            <Link href='https://aaron-anablon.vercel.app/'
+                target="_blank" rel="noopener noreferrer"
+                className="text-white m-8 text-xl fixed bottom-0">About Developer</Link>
+        </div >
     );
 }
 
