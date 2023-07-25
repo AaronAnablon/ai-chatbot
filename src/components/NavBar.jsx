@@ -11,6 +11,7 @@ const NavBar = ({ toggleNav, setData, toggleModal }) => {
                 X
             </button></div>
             <h1 className="sticky top-0 bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text text-center py-3 font-bold text-6xl">Ai Chatbot</h1>
+            <p className="text-white">Try this examples:</p>
             <div className="text-white sticky top-36 flex flex-col gap-4">
                 {ExampleData && ExampleData.map((data, index) => (
                     <div key={index} onClick={toggleModal}>

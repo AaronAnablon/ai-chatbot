@@ -3,6 +3,8 @@ import {
     GiNotebook,
     GiBirdTwitter,
     GiKeyCard,
+    GiSoundWaves,
+    GiBulb,
 } from "react-icons/gi";
 
 const ExampleData = [
@@ -33,6 +35,20 @@ const ExampleData = [
         prompt: 'You will be provided with a tweet, and your task is to classify its sentiment as positive, neutral, or negative.Here is the tweet: I loved the new Batman movie!',
         sample: 'positive',
         logo: <GiBirdTwitter className="w-full h-full" />,
+    },
+    {
+        title: 'Translation',
+        desc: 'Translate natural language text.',
+        prompt: 'You will be provided with a sentence in English, and your task is to translate it into French. Here is the sentence: My name is Jane. What is yours?',
+        sample: 'Mon nom est Jane. Quel est le tien?',
+        logo: <GiSoundWaves className="w-full h-full" />,
+    },
+    {
+        title: 'Product name generator',
+        desc: 'Generate product names from a description and seed words.',
+        prompt: 'You will be provided with a product description and seed words, and your task is to generate product names. Here is the description: Product description: A home milkshake maker Seed words: fast, healthy, compact.',
+        sample: '1. QuickBlend 2. FitShake3. MiniMix4. TurboShake5. HealthWhiz6. MightyMixer7. SlimBlend8. SpeedyShake9. NutriBlend10. CompactMilkshake',
+        logo: <GiBulb className="w-full h-full" />,
     },
 ]
 export default ExampleData;
