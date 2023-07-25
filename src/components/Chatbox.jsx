@@ -49,9 +49,9 @@ const Chatbox = ({ tryExample }) => {
                         Feel free to experiment with different questions and topics. We hope you have a fantastic experience engaging with the AI Chatbot!
                         <div className="my-10 gap-2 justify-center flex items-center">
                             If you have any feedback or suggestions, I'd love to hear from you.
-                            <Link href='https://aaron-anablon.vercel.app/'
+                            <Link className="flex gap-2" href='https://aaron-anablon.vercel.app/'
                                 target="_blank" rel="noopener noreferrer">
-                                <FaHandPointRight size={24} /></Link></div>
+                                <FaHandPointRight size={24} />Click me!</Link></div>
                         Chat away and enjoy your time with this friendly AI companion!</div>}
                     {
                         chatLog.map((message, index) => (
@@ -65,9 +65,11 @@ const Chatbox = ({ tryExample }) => {
                         ))
                     }
                     {chatLog.length > 0 &&
-                        <button className="text-white flex gap-2 items-center" onClick={() => handleClearConvo()}>
+                        <div className="flex justify-end">  
+                            <button className="text-white flex gap-2 items-center" onClick={() => handleClearConvo()}>
                             <FaTrash /> Clear Conversation
-                        </button>}
+                        </button>
+                        </div>}
                 </div>
             </div>
             <form onSubmit={handleSubmit} className="rounded-lg p-6 lg:mx-6 mx-4 bg-gray-900 lg:w-8/12 w-11/12 fixed bottom-0">
