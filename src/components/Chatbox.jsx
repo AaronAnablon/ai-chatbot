@@ -46,7 +46,7 @@ const Chatbox = ({ tryExample }) => {
                 <div className="flex flex-col space-y-4">
                     {chatLog.length === 0 && <div className="h-screen text-white text-center">
                         <div className="text-2xl">Don't hesitate to interact with it. </div>
-                        Feel free to experiment with different questions and topics. We hope you have a fantastic experience engaging with the AI Chatbot!
+                        Feel free to experiment with different questions and topics. I hope you have a fantastic experience engaging with the AI Chatbot!
                         <div className="my-10 gap-2 justify-center flex items-center">
                             If you have any feedback or suggestions, I'd love to hear from you.
                             <Link className="flex gap-2" href='https://aaron-anablon.vercel.app/'
