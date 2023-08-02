@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <div>
       <div className="grid grid-cols-4">
-        <div className="fixed top-0 left-0 lg:hidden z-10">
+        <div className="fixed top-0 left-0 bg-slate-600 w-screen lg:hidden z-10">
           <button className="text-white p-4" onClick={toggleNav}>
             <GiHamburgerMenu size={28} />
           </button>
@@ -36,7 +36,7 @@ export default function Home() {
         <div className="hidden col-span-1 lg:block">
           <NavBar className="hidden lg:block" setData={setData} toggleModal={toggleModal} />
         </div>
-        <div className="lg:col-span-3 col-span-4">
+        <div className="lg:col-span-3 mt-12 col-span-4">
           <Chatbox tryExample={tryExample} />
         </div>
         {showModal && (

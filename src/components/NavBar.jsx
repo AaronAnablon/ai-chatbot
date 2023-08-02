@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ExampleData from "@/helpers/ExampleData";
+import { BsX } from "react-icons/bs";
 
 const NavBar = ({ toggleNav, setData, toggleModal }) => {
     const handleClick = (data) => {
@@ -8,7 +9,7 @@ const NavBar = ({ toggleNav, setData, toggleModal }) => {
     return (
         <div className="bg-black px-4 h-screen sticky top-0">
             <div className="flex justify-end"><button className="text-white p-4 lg:hidden text-4xl" onClick={toggleNav}>
-                X
+                <BsX />
             </button></div>
             <h1 className="sticky top-0 bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text text-center py-3 font-bold text-6xl">Ai Chatbot</h1>
             <p className="text-white">Try this examples:</p>
