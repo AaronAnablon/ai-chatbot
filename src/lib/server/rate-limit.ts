@@ -75,6 +75,11 @@ class UpstashStore implements CounterStore {
       headers: { Authorization: `Bearer ${this.token}` },
       body: JSON.stringify(commands),
     });
+    if (response.status === 401) {
+      throw new Error(
+        "Upstash rejected the credentials (401). Copy the URL and token from the REST API section of your Upstash Redis database."
+      );
+    }
     if (!response.ok) {
       throw new Error(`Rate limit store responded with ${response.status}`);
     }
@@ -96,7 +101,7 @@ const createStore = (): CounterStore => {
 
   if (process.env.NODE_ENV === "production") {
     console.warn(
-      "UPSTASH_REDIS_REST_URL/TOKEN are not set: usage limits are kept in memory and reset whenever the server restarts."
+      "Upstash credentials are not set: usage limits are kept in memory and reset whenever the server restarts."
     );
   }
   return new MemoryStore();

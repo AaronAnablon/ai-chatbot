@@ -31,6 +31,8 @@ A small chatbot demo built with [Next.js](https://nextjs.org/), TypeScript and T
 | `UPSTASH_REDIS_REST_URL` | In production | | Upstash Redis REST URL for storing usage limits |
 | `UPSTASH_REDIS_REST_TOKEN` | In production | | Upstash Redis REST token |
 
+If you add Upstash Redis from your Vercel project's **Storage** tab, Vercel sets `KV_REST_API_URL` and `KV_REST_API_TOKEN` for you. The app reads those too, so you don't need to copy anything.
+
 ## Notes on usage limits
 
 This is a demo, so usage is capped:
