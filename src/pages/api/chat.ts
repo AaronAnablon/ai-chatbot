@@ -1,54 +1,63 @@
-import { OpenAIApi, Configuration } from 'openai';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getClientId } from "@/lib/server/client-id";
+import { serverConfig } from "@/lib/server/config";
+import { describeOpenAIError, generateReply, isOpenAIConfigured } from "@/lib/server/openai";
+import { consumePrompt } from "@/lib/server/rate-limit";
+import type { ChatErrorResponse, ChatReplyResponse } from "@/types/chat";
 
-const apiKey = process.env.OPENAI_API_KEY;
+const GENERIC_ERROR = "Something went wrong. Please try again later.";
 
-let tokensUsed = 0;
-let lastTimestamp = Date.now();
-
-const updateTokenUsage = (response) => {
-  const now = Date.now();
-  const tokens = response.data.usage.total_tokens;
-  const duration = now - lastTimestamp;
-  tokensUsed += tokens;
-  lastTimestamp = now;
-  if (duration > 60000) {
-    tokensUsed = tokens;
-  }
-};
-
-const createChatCompletion = async (input) => {
-  const configuration = new Configuration({
-    apiKey: apiKey,
-  });
-
-  const openai = new OpenAIApi(configuration);
-
-  try {
-    const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: input }],
-    });
-    updateTokenUsage(response);
-    return response;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Something went wrong.');
-  }
-};
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.status(405).json({ message: 'Method should be POST' });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ChatReplyResponse | ChatErrorResponse>
+) {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    res.status(405).json({ error: "Method should be POST" });
     return;
   }
 
-  const { input } = req.body;
+  if (!isOpenAIConfigured()) {
+    console.error("OPENAI_API_KEY is not set. Add it to your .env file.");
+    res.status(500).json({ error: GENERIC_ERROR });
+    return;
+  }
+
+  const { input } = req.body as { input?: unknown };
+  const prompt = typeof input === "string" ? input.trim() : "";
+  const { maxInputChars } = serverConfig.limits;
+
+  if (!prompt) {
+    res.status(400).json({ error: "Please enter a message." });
+    return;
+  }
+  if (prompt.length > maxInputChars) {
+    res.status(400).json({ error: `Messages can be up to ${maxInputChars} characters long.` });
+    return;
+  }
+
+  let quota: Awaited<ReturnType<typeof consumePrompt>>;
+  try {
+    quota = await consumePrompt(getClientId(req));
+  } catch (error) {
+    console.error("Usage limit check failed:", error);
+    res.status(503).json({ error: GENERIC_ERROR });
+    return;
+  }
+
+  if (!quota.allowed) {
+    res.status(429).json({
+      error: "You've reached the demo message limit. Please come back later.",
+      usage: quota.usage,
+    });
+    return;
+  }
 
   try {
-    const response = await createChatCompletion(input);
-    res.status(200).json({ message: response.data });
+    const reply = await generateReply(prompt);
+    res.status(200).json({ reply, usage: quota.usage });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Something went wrong.' });
+    console.error("Chat completion failed:", describeOpenAIError(error));
+    res.status(500).json({ error: GENERIC_ERROR, usage: quota.usage });
   }
 }

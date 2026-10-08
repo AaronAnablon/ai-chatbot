@@ -1,40 +1,62 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ai Chatbot
 
-## Getting Started
+A small chatbot demo built with [Next.js](https://nextjs.org/), TypeScript and Tailwind CSS. It works on desktop and mobile and comes with ready-made example prompts.
 
-First, run the development server:
+## Getting started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Copy `.env.example` to `.env` and set `OPENAI_API_KEY` to a key from https://platform.openai.com/api-keys.
+
+3. Start the development server and open [http://localhost:3000](http://localhost:3000):
+
+   ```bash
+   npm run dev
+   ```
+
+## Environment variables
+
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `OPENAI_API_KEY` | Yes | | API key used to generate replies |
+| `OPENAI_MODEL` | No | `gpt-4o-mini` | Chat model (use a non-reasoning model such as `gpt-4o-mini` or `gpt-4.1`; `gpt-5` models need a newer SDK) |
+| `OPENAI_MAX_TOKENS` | No | `300` | Maximum length of each reply, in tokens |
+| `RATE_LIMIT_MAX_PROMPTS` | No | `10` | Messages each visitor can send per window |
+| `RATE_LIMIT_WINDOW_HOURS` | No | `24` | Length of the usage window, in hours |
+| `MAX_INPUT_CHARS` | No | `2000` | Maximum length of a single message |
+| `UPSTASH_REDIS_REST_URL` | In production | | Upstash Redis REST URL for storing usage limits |
+| `UPSTASH_REDIS_REST_TOKEN` | In production | | Upstash Redis REST token |
+
+## Notes on usage limits
+
+This is a demo, so usage is capped:
+
+- Each visitor can send **10 messages per 24 hours** by default. The page shows how many are left and when the allowance resets.
+- Replies are capped at **300 tokens**, and each message can be up to **2,000 characters**.
+- Set the Upstash variables in production. Without them, limits are kept in server memory, so they reset on every restart and aren't shared between server instances (for example, on Vercel).
+- These limits stop casual overuse but can't stop a determined user. Also set a monthly budget for your OpenAI project as a hard cap on spending.
+
+## Project structure
+
+```
+src/
+  components/
+    chat/       Chat window, input, message bubbles, usage note
+    examples/   Example list and example dialog
+    layout/     Sidebar, mobile header and drawer
+  config/       Site-wide settings (name, links)
+  data/         Example prompts
+  hooks/        useChat: chat state and API calls
+  lib/server/   Server-only code: config, OpenAI client, usage limits
+  pages/        Next.js pages and API routes (/api/chat, /api/usage)
+  styles/       Global CSS
+  types/        Shared TypeScript types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-Don't forget to add the .env and get your api from the openai documentation
+The app deploys to [Vercel](https://vercel.com/new) as-is. Add the environment variables above in the project settings.

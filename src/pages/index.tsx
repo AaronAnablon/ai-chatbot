@@ -1,50 +1,52 @@
-import Chatbox from "../components/Chatbox";
-import Example from "@/components/Example";
-import { useState, useEffect } from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
-import NavBar from "@/components/NavBar";
+import { useEffect, useState } from "react";
+import ChatWindow from "@/components/chat/ChatWindow";
+import ExampleModal from "@/components/examples/ExampleModal";
+import MobileDrawer from "@/components/layout/MobileDrawer";
+import MobileHeader from "@/components/layout/MobileHeader";
+import Sidebar from "@/components/layout/Sidebar";
+import type { Prefill } from "@/types/chat";
+import type { Example } from "@/types/example";
 
 export default function Home() {
-  const [showNav, setShowNav] = useState(false);
-  const [data, setData] = useState();
-  const [tryExample, setTryExample] = useState();
-  const [showModal, setShowModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedExample, setSelectedExample] = useState<Example>();
+  const [prefill, setPrefill] = useState<Prefill>();
 
+  const closeMenu = () => setIsMenuOpen(false);
+  const closeExample = () => setSelectedExample(undefined);
+
+  // Escape closes the top-most layer first: the example dialog, then the menu.
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (selectedExample) setSelectedExample(undefined);
+      else setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedExample]);
 
-  const toggleNav = () => {
-    setShowNav((prevState) => !prevState);
-  };
-  const toggleModal = () => {
-    setShowModal((prevState) => !prevState);
+  const handleTryExample = (prompt: string) => {
+    setPrefill({ text: prompt });
+    closeExample();
+    closeMenu();
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-4">
-        <div className="fixed top-0 left-0 bg-slate-600 w-screen lg:hidden z-10">
-          <button className="text-white p-4" onClick={toggleNav}>
-            <GiHamburgerMenu size={28} />
-          </button>
-          {showNav && <div className="fixed top-0 h-screen">
-            <NavBar toggleNav={toggleNav} toggleModal={toggleModal} setData={setData} />
-          </div>
-          }
-        </div>
-        <div className="hidden col-span-1 lg:block">
-          <NavBar className="hidden lg:block" setData={setData} toggleModal={toggleModal} />
-        </div>
-        <div className="lg:col-span-3 mt-12 col-span-4">
-          <Chatbox tryExample={tryExample} />
-        </div>
-        {showModal && (
-          <div className="col-span-4 fixed top-0 inset-0 flex items-center justify-center z-50">
-            <Example data={data} setTryExample={setTryExample} toggleNav={toggleNav} toggleModal={toggleModal} />
-          </div>
-        )}
-      </div>
+    <div className="flex h-[100dvh] overflow-hidden bg-gray-900 text-white">
+      <aside className="hidden w-72 shrink-0 lg:block xl:w-80">
+        <Sidebar onSelectExample={setSelectedExample} />
+      </aside>
+      <MobileDrawer isOpen={isMenuOpen} onClose={closeMenu} onSelectExample={setSelectedExample} />
+
+      <main className="flex min-w-0 flex-1 flex-col">
+        <MobileHeader onOpenMenu={() => setIsMenuOpen(true)} />
+        <ChatWindow prefill={prefill} onSelectExample={setSelectedExample} />
+      </main>
+
+      {selectedExample && (
+        <ExampleModal example={selectedExample} onTry={handleTryExample} onClose={closeExample} />
+      )}
     </div>
   );
 }
